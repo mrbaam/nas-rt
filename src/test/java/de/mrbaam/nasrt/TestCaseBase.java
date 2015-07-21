@@ -24,6 +24,8 @@ public abstract class TestCaseBase extends TestCase {
 
     @Before
     protected void setUp() throws Exception {
+        super.setUp();
+
         tmpFolderPath = Paths.get("TV show");
 
         Files.createDirectory(tmpFolderPath);
@@ -35,6 +37,8 @@ public abstract class TestCaseBase extends TestCase {
     @After
     protected void tearDown() throws Exception {
         deleteTmpFiles();
+
+        super.tearDown();
     }
 
 

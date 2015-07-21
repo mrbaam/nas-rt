@@ -1,5 +1,8 @@
-package de.mrbaam.nasrt;
+package de.mrbaam.nasrt.model;
 
+import de.mrbaam.nasrt.TestCaseBase;
+import de.mrbaam.nasrt.TestUtils;
+import de.mrbaam.nasrt.data.Release;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.junit.After;
@@ -7,14 +10,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * Created by Fabian on 18.07.2015.
  */
 public class ReleaseFileVisitorTestCase extends TestCaseBase {
-    private ReleaseFileVisitor   visitor;
-    private ObservableList<Path> releases;
+    private ReleaseFileVisitor      visitor;
+    private ObservableList<Release> releases;
 
 
     @Before
@@ -46,13 +48,15 @@ public class ReleaseFileVisitorTestCase extends TestCaseBase {
 
         assertEquals(3, releases.size());
 
-        for (Path path : releases)
-        {
-            final String fileName = path.getFileName().toString();
+        for (Release release : releases) {
+            containsArrow      = TestUtils.checkRelease("Arrow", containsArrow, release.getTitle());
+            containsBurnNotice = TestUtils.checkRelease("Burn Notice", containsBurnNotice, release.getTitle());
+            containsChuck      = TestUtils.checkRelease("Chuck", containsChuck, release.getTitle());
 
-            containsArrow      = checkRelease("Arrow", containsArrow, fileName);
-            containsBurnNotice = checkRelease("Burn Notice", containsBurnNotice, fileName);
-            containsChuck      = checkRelease("Chuck", containsChuck, fileName);
+            if ("Arrow".equals(release.getTitle())) {
+                assertEquals(1, release.getMovingCandidates().size());
+                assertEquals(1, release.getRenamingCandidates().size());
+            }
         }
 
         assertTrue(containsArrow);
@@ -60,15 +64,13 @@ public class ReleaseFileVisitorTestCase extends TestCaseBase {
         assertTrue(containsChuck);
     }
 
-    private boolean checkRelease(String name, boolean checkValue, String fileName) {
-        if (fileName.equals(name))
-        {
-            if (!checkValue)
-                checkValue = true;
-            else
-                assertFalse(name + " already exists!", true);
-        }
 
-        return checkValue;
-    }
+//    @Test
+//    public void testHasCorrectName() {
+//        final Release rel = new Release(Paths.get("Test"), "Der Herr der Ringe - Die zwei Türme", Release.MOVIE);
+//
+//        visitor.setTmpRelease(rel);
+//
+//        visitor._hasCorrectName(null);
+//    }
 }

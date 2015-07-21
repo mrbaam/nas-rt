@@ -1,5 +1,6 @@
-package de.mrbaam.nasrt;
+package de.mrbaam.nasrt.model;
 
+import de.mrbaam.nasrt.data.Release;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -12,11 +13,16 @@ import java.nio.file.Path;
  * @author mrbaam
  */
 public class Model {
-    private final ObservableList<Path> l_releases;
+    private final ObservableList<Release> l_releases;
 
 
     public Model() {
         l_releases = FXCollections.observableArrayList();
+    }
+
+
+    public void checkRelease(Release release) {
+        release.setGoodStructure(false);
     }
 
 
@@ -29,7 +35,7 @@ public class Model {
     }
 
 
-    public ObservableList<Path> getReleases() {
+    public ObservableList<Release> getReleases() {
         return l_releases;
     }
 }
