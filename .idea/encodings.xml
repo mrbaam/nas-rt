@@ -2,13 +2,6 @@
 <project version="4">
   <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$/src/main/java/de/mrbaam/nasrt/data/Release.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/main/java/de/mrbaam/nasrt/model/Model.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/main/java/de/mrbaam/nasrt/model/ReleaseFileVisitor.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/test/java/de/mrbaam/nasrt/TestCaseBase.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/test/java/de/mrbaam/nasrt/TestUtils.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/test/java/de/mrbaam/nasrt/data/ReleaseTestCase.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/test/java/de/mrbaam/nasrt/model/ModelTestCase.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/test/java/de/mrbaam/nasrt/model/ReleaseFileVisitorTestCase.java" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>
