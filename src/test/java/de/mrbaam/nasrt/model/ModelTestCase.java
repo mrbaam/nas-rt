@@ -7,6 +7,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+
 /**
  * Created by mrbaam on 17.07.2015.
  * @author mrbaam
@@ -26,23 +33,6 @@ public class ModelTestCase extends TestCaseBase {
     @After
     protected void tearDown() throws Exception {
         super.tearDown();
-    }
-
-
-    @Test
-    public void testCheckRelease() throws Exception {
-        model.readReleases(tmpFolderPath);
-
-        for (Release release : model.getReleases()) {
-            assertFalse(release.hasGoodStructure());
-
-            model.checkRelease(release);
-
-            if ("Arrow".equals(release.getTitle()))
-                assertTrue(release.hasGoodStructure());
-            else
-                assertFalse(release.hasGoodStructure());
-        }
     }
 
 
@@ -68,5 +58,43 @@ public class ModelTestCase extends TestCaseBase {
         assertTrue(containsArrow);
         assertTrue(containsBurnNotice);
         assertTrue(containsChuck);
+    }
+
+
+    @Test
+    public void testRefactorFiles() throws Exception {
+        model.readReleases(tmpFolderPath);
+
+        for (final Release release : model.getReleases()) {
+            model.refactorFiles(release);
+
+            Files.walkFileTree(release.getPathToRelease(), new FileVisitor<Path>() {
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    final String season = file.getParent().getFileName().toString();
+                    final String tvShow = file.getParent().getParent().getFileName().toString();
+
+                    assertTrue(season.matches("[Ss](taffel)\\s\\d+"));
+                    assertEquals(release.getTitle(), tvShow);
+
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        }
     }
 }

@@ -41,8 +41,18 @@ public class ReleaseTestCase extends TestCase {
 
 
     @Test
+    public void testDeletingCandidates() {
+        assertTrue(release.getDeletingCandidates().isEmpty());
+
+        release.addDeleteCandidate(TITLE, PATH);
+
+        assertFalse(release.getDeletingCandidates().isEmpty());
+    }
+
+
+    @Test
     public void testGoodStructure() {
-        assertFalse(release.hasGoodStructure());
+        assertTrue(release.hasGoodStructure());
     }
 
 
@@ -50,7 +60,7 @@ public class ReleaseTestCase extends TestCase {
     public void testMovingCandidates() {
         assertTrue(release.getMovingCandidates().isEmpty());
 
-        release.addMoveCandidate("Test", Paths.get("Test"));
+        release.addMoveCandidate(TITLE, PATH);
 
         assertFalse(release.getMovingCandidates().isEmpty());
     }
@@ -77,7 +87,7 @@ public class ReleaseTestCase extends TestCase {
     public void testRenamingCandidates() {
         assertTrue(release.getRenamingCandidates().isEmpty());
 
-        release.addRenameCandidate("Test", Paths.get("Test"));
+        release.addRenameCandidate(TITLE, PATH);
 
         assertFalse(release.getRenamingCandidates().isEmpty());
     }
@@ -103,6 +113,6 @@ public class ReleaseTestCase extends TestCase {
     public void testType() {
         assertEquals(Release.TVSHOW, release.getType());
 
-        new Release(Paths.get("Test"), "Test", 0);
+        new Release(PATH, TITLE, 0);
     }
 }

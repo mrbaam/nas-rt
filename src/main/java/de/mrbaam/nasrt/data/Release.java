@@ -21,6 +21,7 @@ public class Release {
     private ObjectProperty<Path> pathToRelease;
     private StringProperty       title;
 
+    private Map<String, Path> deletingCandidates;
     private Map<String, Path> movingCandidates;
     private Map<String, Path> renamingCandidates;
 
@@ -29,13 +30,24 @@ public class Release {
         if (releaseType != Release.TVSHOW && releaseType != Release.MOVIE)
             throw new IllegalArgumentException("Unknown release type.");
 
+        deletingCandidates = new HashMap<>();
         movingCandidates   = new HashMap<>();
         renamingCandidates = new HashMap<>();
 
-        goodStructure = new SimpleBooleanProperty(false);
+        goodStructure = new SimpleBooleanProperty(true);
         pathToRelease = new SimpleObjectProperty<>(path);
         title         = new SimpleStringProperty(releaseTitle);
         type          = new SimpleIntegerProperty(releaseType);
+    }
+
+
+    public void addDeleteCandidate(String name, Path path) {
+        deletingCandidates.put(name, path);
+    }
+
+
+    public Map<String, Path> getDeletingCandidates() {
+        return deletingCandidates;
     }
 
 

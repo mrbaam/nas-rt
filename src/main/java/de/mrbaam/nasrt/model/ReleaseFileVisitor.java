@@ -14,8 +14,12 @@ import java.nio.file.attribute.BasicFileAttributes;
  * @author mrbaam
  */
 public class ReleaseFileVisitor implements FileVisitor<Path> {
+    /** Regular expression for a sample. */
+    private static final String REGEX_SAMPLE = "[Ss](ample)\\.*";
     /** Regular expression for a season. */
-    private static final String REGEX = "[Ss](taffel)\\s\\d+";
+    private static final String REGEX_SEASON = "[Ss](taffel)\\s\\d+";
+    /** Regular expression for a video file. */
+    private static final String REGEX_VIDEO  = ".*\\.((mkv)|(avi)|(mp4)|(wmv))";
 
     private final ObservableList<Release> releases;
 
@@ -34,7 +38,7 @@ public class ReleaseFileVisitor implements FileVisitor<Path> {
 
         dirName = dir.getFileName().toString();
 
-        if (dir.getParent() != null && dirName.matches(REGEX)) {
+        if (dir.getParent() != null && dirName.matches(REGEX_SEASON)) {
             for (int index = 0; index < releases.size(); index++) {
                 if (releases.get(index).getTitle().equals(dir.getParent().getFileName().toString()))
                     return FileVisitResult.CONTINUE;
@@ -52,14 +56,26 @@ public class ReleaseFileVisitor implements FileVisitor<Path> {
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        final Path parent = file.getParent();
+        final Path   parent   = file.getParent();
+        final String fileName = file.getFileName().toString();
 
         if (Release.TVSHOW == tmpRelease.getType()) {
-            if (!_hasCorrectSeasonName(file))
-                tmpRelease.addRenameCandidate(file.getFileName().toString(), file);
+            if (_isSample(file) || _isNoVideoFile(file)) {
+                tmpRelease.addDeleteCandidate(fileName, file);
+                tmpRelease.setGoodStructure(false);
 
-            if (!parent.getFileName().toString().matches(REGEX))
-                tmpRelease.addMoveCandidate(file.getFileName().toString(), file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            if (!_hasCorrectSeasonName(file)) {
+                tmpRelease.addRenameCandidate(fileName, file);
+                tmpRelease.setGoodStructure(false);
+            }
+
+            if (!parent.getFileName().toString().matches(REGEX_SEASON)) {
+                tmpRelease.addMoveCandidate(fileName, file);
+                tmpRelease.setGoodStructure(false);
+            }
         }
 
         return FileVisitResult.CONTINUE;
@@ -84,17 +100,27 @@ public class ReleaseFileVisitor implements FileVisitor<Path> {
         String tmpTitle;
 
         tmpTitle = tmpRelease.getTitle().replaceAll("[^a-zA-Z0-9ÄäÖöÜüß]", " ");
-        tmpTitle = tmpTitle.replaceAll("\\s+", ".");
+        tmpTitle = tmpTitle.replaceAll("\\s+", "\\.");
 
-        regExBuilder.append("(").append(tmpTitle).append(".)");
+        regExBuilder.append("(").append(tmpTitle).append("\\.)");
         regExBuilder.append("([Ss][0-9]+)?[Ee][0-9]+");
-        regExBuilder.append(".").append("((mkv)|(mp4)|(avi)|(wmv))");
+        regExBuilder.append("\\.").append("((mkv)|(mp4)|(avi)|(wmv))");
 
         return file.getFileName().toString().matches(regExBuilder.toString());
     }
 
 
-    public void setTmpRelease(Release release) {
-        tmpRelease = release;
+    private boolean _isNoVideoFile(Path file) {
+        return !file.getFileName().toString().toLowerCase().matches(REGEX_VIDEO);
+    }
+
+
+    private boolean _isSample(Path file) {
+        final String parentDirName = file.getParent().getFileName().toString().toLowerCase();
+
+        if (parentDirName.matches(REGEX_SAMPLE) || file.getFileName().toString().toLowerCase().matches(REGEX_SAMPLE))
+            return true;
+
+        return false;
     }
 }

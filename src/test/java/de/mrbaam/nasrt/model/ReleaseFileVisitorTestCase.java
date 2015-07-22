@@ -54,8 +54,22 @@ public class ReleaseFileVisitorTestCase extends TestCaseBase {
             containsChuck      = TestUtils.checkRelease("Chuck", containsChuck, release.getTitle());
 
             if ("Arrow".equals(release.getTitle())) {
+                assertFalse(release.hasGoodStructure());
+                assertEquals(2, release.getDeletingCandidates().size());
                 assertEquals(1, release.getMovingCandidates().size());
                 assertEquals(1, release.getRenamingCandidates().size());
+            }
+            else if ("Burn Notice".equals(release.getTitle())) {
+                assertTrue(release.hasGoodStructure());
+                assertTrue(release.getDeletingCandidates().isEmpty());
+                assertTrue(release.getMovingCandidates().isEmpty());
+                assertTrue(release.getRenamingCandidates().isEmpty());
+            }
+            else if ("Chuck".equals(release.getTitle())) {
+                assertFalse(release.hasGoodStructure());
+                assertEquals(1, release.getDeletingCandidates().size());
+                assertEquals(2, release.getMovingCandidates().size());
+                assertTrue(release.getRenamingCandidates().isEmpty());
             }
         }
 
@@ -63,14 +77,4 @@ public class ReleaseFileVisitorTestCase extends TestCaseBase {
         assertTrue(containsBurnNotice);
         assertTrue(containsChuck);
     }
-
-
-//    @Test
-//    public void testHasCorrectName() {
-//        final Release rel = new Release(Paths.get("Test"), "Der Herr der Ringe - Die zwei Türme", Release.MOVIE);
-//
-//        visitor.setTmpRelease(rel);
-//
-//        visitor._hasCorrectName(null);
-//    }
 }
