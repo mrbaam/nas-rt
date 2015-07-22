@@ -79,6 +79,7 @@ public class ModelTestCase extends TestCaseBase {
                     final String season = file.getParent().getFileName().toString();
                     final String tvShow = file.getParent().getParent().getFileName().toString();
 
+                    assertTrue(file.getFileName().toString().matches(_createRegEx(release.getTitle())));
                     assertTrue(season.matches("[Ss](taffel)\\s\\d+"));
                     assertEquals(release.getTitle(), tvShow);
 
@@ -96,5 +97,18 @@ public class ModelTestCase extends TestCaseBase {
                 }
             });
         }
+    }
+
+
+    private String _createRegEx(String title) {
+        final StringBuilder builder;
+        final String        regExTitle;
+
+        builder    = new StringBuilder();
+        regExTitle = title.replaceAll("[^a-zA-Z0-9ÄäÖöÜüß]", " ").replaceAll("\\s+", "\\.");
+
+        builder.append(regExTitle).append("\\.").append("([Ss]\\d+)?[Ee]\\d+").append("\\.((mkv)|(avi)|(mp4)|(wmv))");
+
+        return builder.toString();
     }
 }
