@@ -16,20 +16,32 @@ import java.util.regex.Pattern;
  * @author mrbaam
  */
 public class Model {
-    private final ObservableList<Release> l_releases;
+    private static Model model;
+
+    private final ObservableList<Release> releases;
 
 
-    public Model() {
-        l_releases = FXCollections.observableArrayList();
+    private Model() {
+        releases = FXCollections.observableArrayList();
     }
 
 
-    public void readReleases(Path rootPath) throws IOException {
+    public static Model getInstance() {
+        if (model == null)
+            model = new Model();
+
+        return model;
+    }
+
+
+    public ObservableList<Release> readReleases(Path rootPath) throws IOException {
         final ReleaseFileVisitor l_visitor;
 
-        l_visitor = new ReleaseFileVisitor(l_releases);
+        l_visitor = new ReleaseFileVisitor(releases);
 
         Files.walkFileTree(rootPath, l_visitor);
+
+        return releases;
     }
 
 
@@ -107,6 +119,6 @@ public class Model {
 
 
     public ObservableList<Release> getReleases() {
-        return l_releases;
+        return releases;
     }
 }

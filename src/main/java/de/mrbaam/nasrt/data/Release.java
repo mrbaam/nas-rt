@@ -12,13 +12,20 @@ import java.util.Map;
  */
 public class Release {
     /** Constant for movie type. */
-    public static final int MOVIE  = 1;
+    public static final int MOVIE       = 1;
     /** Constant for tv show type. */
-    public static final int TVSHOW = 2;
+    public static final int TVSHOW      = 2;
+    /** Constant for OK status. */
+    public static final String OK       = "OK";
+    /** Constant for in progress status. */
+    public static final String PROGRESS = "In Arbeit";
+    /** Constant for to-do status. */
+    public static final String TODO     = "Ausstehend";
 
     private BooleanProperty      goodStructure;
     private IntegerProperty      type;
     private ObjectProperty<Path> pathToRelease;
+    private StringProperty       status;
     private StringProperty       title;
 
     private Map<String, Path> deletingCandidates;
@@ -36,6 +43,7 @@ public class Release {
 
         goodStructure = new SimpleBooleanProperty(true);
         pathToRelease = new SimpleObjectProperty<>(path);
+        status        = new SimpleStringProperty(OK);
         title         = new SimpleStringProperty(releaseTitle);
         type          = new SimpleIntegerProperty(releaseType);
     }
@@ -98,6 +106,21 @@ public class Release {
 
     public void setPathToRelease(Path pathToRelease) {
         this.pathToRelease.set(pathToRelease);
+    }
+
+
+    public String getStatus() {
+        return status.get();
+    }
+
+
+    public StringProperty statusProperty() {
+        return status;
+    }
+
+
+    public void setStatus(String status) {
+        this.status.set(status);
     }
 
 

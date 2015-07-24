@@ -26,7 +26,7 @@ public class ModelTestCase extends TestCaseBase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        model = new Model();
+        model = Model.getInstance();
     }
 
 

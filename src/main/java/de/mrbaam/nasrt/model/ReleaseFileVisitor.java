@@ -59,10 +59,14 @@ public class ReleaseFileVisitor implements FileVisitor<Path> {
         final Path   parent   = file.getParent();
         final String fileName = file.getFileName().toString();
 
+        if (tmpRelease == null)
+            return FileVisitResult.CONTINUE;
+
         if (Release.TVSHOW == tmpRelease.getType()) {
             if (_isSample(file) || _isNoVideoFile(file)) {
                 tmpRelease.addDeleteCandidate(fileName, file);
                 tmpRelease.setGoodStructure(false);
+                tmpRelease.setStatus(Release.TODO);
 
                 return FileVisitResult.CONTINUE;
             }
@@ -70,11 +74,13 @@ public class ReleaseFileVisitor implements FileVisitor<Path> {
             if (!_hasCorrectSeasonName(file)) {
                 tmpRelease.addRenameCandidate(fileName, file);
                 tmpRelease.setGoodStructure(false);
+                tmpRelease.setStatus(Release.TODO);
             }
 
             if (!parent.getFileName().toString().matches(REGEX_SEASON)) {
                 tmpRelease.addMoveCandidate(fileName, file);
                 tmpRelease.setGoodStructure(false);
+                tmpRelease.setStatus(Release.TODO);
             }
         }
 

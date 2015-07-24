@@ -94,6 +94,22 @@ public class ReleaseTestCase extends TestCase {
 
 
     @Test
+    public void testStatus() {
+        final StringProperty testProp = new SimpleStringProperty();
+
+        testProp.bind(release.statusProperty());
+
+        assertEquals(Release.OK, release.getStatus());
+        assertEquals(Release.OK, testProp.get());
+
+        release.setStatus(Release.PROGRESS);
+
+        assertEquals(Release.PROGRESS, release.getStatus());
+        assertEquals(Release.PROGRESS, testProp.get());
+    }
+
+
+    @Test
     public void testTitle() {
         final StringProperty testProp = new SimpleStringProperty();
 
