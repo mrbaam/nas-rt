@@ -1,0 +1,62 @@
+* {
+    -fx-gray: #1b1b1b;
+    -fx-text-highlight: #00a2ff;
+    -fx-text-fill: #ffffff;
+}
+
+.background {
+    -fx-background-color: derive(-fx-gray, 10%);
+}
+
+.nasrt-button {
+    -fx-background-color: -fx-gray, #ffffff, -fx-gray;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 0,0,0;
+    -fx-text-fill: #ffffff;
+}
+.nasrt-button:hover {
+    -fx-background-color: -fx-gray, -fx-text-highlight, -fx-gray;
+    -fx-text-fill: -fx-text-highlight;
+}
+
+.nasrt-checkbox:hover {
+    -fx-text-fill: -fx-text-highlight;
+}
+.nasrt-checkbox .box {
+    -fx-background-color: -fx-gray, #ffffff, -fx-gray;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 0,0,0;
+}
+.nasrt-checkbox:hover .box {
+    -fx-background-color: -fx-gray, -fx-text-highlight, -fx-gray;
+}
+.nasrt-checkbox:selected .mark {
+    -fx-background-color: #ffffff;
+}
+.nasrt-checkbox:selected:hover .mark {
+    -fx-background-color: -fx-text-highlight;
+}
+
+.nasrt-textfield {
+    -fx-background-color: -fx-gray, #ffffff, -fx-gray;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 0,0,0;
+    -fx-text-fill: #ffffff;
+}
+
+.table-view {
+    -fx-base: -fx-gray;
+    -fx-control-inner-background: -fx-gray;
+    -fx-background-color: -fx-gray;
+    -fx-table-cell-border-color: transparent;
+    -fx-table-header-border-color: transparent;
+    /*-fx-padding: 5;*/
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view:focused .table-row-cell:filled:focused:selected {
+    -fx-background-color: -fx-focus-color;
+}

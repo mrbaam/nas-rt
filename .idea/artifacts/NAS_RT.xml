@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="NAS-RT">
+    <output-path>$PROJECT_DIR$/out/artifacts/NAS_RT</output-path>
+    <root id="archive" name="NAS-RT.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="nas-rt" />
+      <element id="library" level="project" name="lib" />
+    </root>
+  </artifact>
+</component>

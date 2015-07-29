@@ -15,6 +15,8 @@ public class Release {
     public static final int MOVIE       = 1;
     /** Constant for tv show type. */
     public static final int TVSHOW      = 2;
+    /** Constant for Error status. */
+    public static final String ERROR    = "Error";
     /** Constant for OK status. */
     public static final String OK       = "OK";
     /** Constant for in progress status. */

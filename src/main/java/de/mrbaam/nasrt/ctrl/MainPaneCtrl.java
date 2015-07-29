@@ -6,15 +6,19 @@ import de.mrbaam.nasrt.model.Model;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.DirectoryChooser;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -23,17 +27,50 @@ import java.util.ResourceBundle;
  * @author mrbaam
  */
 public class MainPaneCtrl implements Initializable {
+    private @FXML Button                       btnClear;
     private @FXML Button                       btnOpen;
     private @FXML Button                       btnRefresh;
     private @FXML Button                       btnStart;
     private @FXML CheckBox                     chkHideFinished;
+    private @FXML ImageView                    ivClear;
     private @FXML TableColumn<Release, String> tcName;
     private @FXML TableColumn<Release, String> tcStatus;
     private @FXML TableColumn<Release, String> tcType;
     private @FXML TableView<Release>           tvReleases;
     private @FXML TextField                    tfDirectory;
 
+    private Image imgClear;
+    private Image imgClearHover;
     private Model model;
+
+
+    @FXML
+    private void onHideFinished() {
+        if (chkHideFinished.isSelected())
+            model.getReleases().removeAll(model.getFinishedReleases());
+        else
+            model.getReleases().addAll(model.getFinishedReleases());
+
+        model.getReleases().sort((r1, r2) -> r1.getTitle().compareTo(r2.getTitle()));
+    }
+
+
+    @FXML
+    private void onMouseIn() {
+        if (imgClearHover == null)
+            imgClearHover = new Image(getClass().getResourceAsStream("/clear_hover.png"));
+
+        ivClear.setImage(imgClearHover);
+    }
+
+
+    @FXML
+    private void onMouseOut() {
+        if (imgClear == null)
+            imgClear = new Image(getClass().getResourceAsStream("/clear.png"));
+
+        ivClear.setImage(imgClear);
+    }
 
 
     @FXML
@@ -82,7 +119,7 @@ public class MainPaneCtrl implements Initializable {
         final Optional<ButtonType> result;
 
         result = DialogBox.showQuestion("Daten zurücksetzen", "Daten zurücksetzen",
-                                        "Möchten Sie die Tabelle wirklich leeren?");
+                "Möchten Sie die Tabelle wirklich leeren?");
 
         if (result.get() == ButtonType.YES) {
             tfDirectory.setText(null);
@@ -93,7 +130,17 @@ public class MainPaneCtrl implements Initializable {
 
     @FXML
     private void onStart() {
+        final ObservableList<Release> copy = FXCollections.observableArrayList(model.getReleases());
 
+        for (Release release : copy) {
+            try {
+                if (!Release.OK.equals(release.getStatus()))
+                    model.refactorFiles(release);
+            } catch (IOException ioex) {
+                release.setStatus(Release.ERROR);
+                ioex.printStackTrace();
+            }
+        }
     }
 
 
@@ -112,6 +159,7 @@ public class MainPaneCtrl implements Initializable {
         listProperty = new SimpleListProperty<>();
         listProperty.bind(tvReleases.itemsProperty());
 
+        btnClear.disableProperty().bind(tvReleases.getSelectionModel().selectedItemProperty().isNull());
         btnRefresh.disableProperty().bind(listProperty.emptyProperty());
         btnStart.disableProperty().bind(listProperty.emptyProperty());
         chkHideFinished.disableProperty().bind(listProperty.emptyProperty());

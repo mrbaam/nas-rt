@@ -1,41 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<GridPane hgap="5.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.51" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.mrbaam.nasrt.ctrl.MainPaneCtrl">
+
+<GridPane hgap="5.0" styleClass="background" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.mrbaam.nasrt.ctrl.MainPaneCtrl">
   <columnConstraints>
     <ColumnConstraints hgrow="NEVER" />
     <ColumnConstraints hgrow="ALWAYS" />
+      <ColumnConstraints hgrow="NEVER" />
       <ColumnConstraints hgrow="NEVER" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints vgrow="NEVER" />
     <RowConstraints vgrow="NEVER" />
-    <RowConstraints vgrow="ALWAYS" />
+    <RowConstraints vgrow="NEVER" />
+      <RowConstraints vgrow="ALWAYS" />
       <RowConstraints vgrow="NEVER" />
   </rowConstraints>
    <children>
       <Label text="Verzeichnis:" />
-      <TextField fx:id="tfDirectory" editable="false" GridPane.columnIndex="1" />
-      <Button fx:id="btnOpen" mnemonicParsing="false" onAction="#onOpen" text="Öffnen" GridPane.columnIndex="2" />
-      <CheckBox fx:id="chkHideFinished" mnemonicParsing="false" text="Abgeschlossene Releases ausblenden" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
-      <TableView fx:id="tvReleases" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+      <TextField fx:id="tfDirectory" editable="false" styleClass="nasrt-textfield" GridPane.columnIndex="1" />
+      <Button fx:id="btnOpen" mnemonicParsing="false" onAction="#onOpen" styleClass="nasrt-button" text="Öffnen" GridPane.columnIndex="2" />
+      <CheckBox fx:id="chkHideFinished" mnemonicParsing="false" onAction="#onHideFinished" styleClass="nasrt-checkbox" text="Abgeschlossene Releases ausblenden" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
+      <TableView fx:id="tvReleases" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.rowSpan="2">
         <columns>
-          <TableColumn fx:id="tcName" prefWidth="75.0" text="Name" />
-          <TableColumn fx:id="tcType" prefWidth="75.0" text="Typ" />
-            <TableColumn fx:id="tcStatus" prefWidth="75.0" text="Status" />
+          <TableColumn fx:id="tcName" prefWidth="75.0" sortable="false" text="Name" />
+          <TableColumn fx:id="tcType" prefWidth="75.0" sortable="false" text="Typ" />
+            <TableColumn fx:id="tcStatus" prefWidth="75.0" sortable="false" text="Status" />
         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
-      <HBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+      <HBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.columnSpan="3" GridPane.rowIndex="4">
          <children>
-            <Button fx:id="btnStart" mnemonicParsing="false" onAction="#onStart" text="Start" />
-            <Button fx:id="btnRefresh" mnemonicParsing="false" onAction="#onRefresh" text="Zurücksetzen" />
+            <Button fx:id="btnStart" mnemonicParsing="false" onAction="#onStart" styleClass="nasrt-button" text="Start" />
+            <Button fx:id="btnRefresh" mnemonicParsing="false" onAction="#onRefresh" styleClass="nasrt-button" text="Zurücksetzen" />
          </children>
       </HBox>
+      <Button fx:id="btnClear" mnemonicParsing="false" onMouseEntered="#onMouseIn" onMouseExited="#onMouseOut" styleClass="nasrt-button" GridPane.columnIndex="3" GridPane.rowIndex="2">
+         <graphic>
+            <ImageView fx:id="ivClear" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@clear.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

@@ -2,11 +2,13 @@ package de.mrbaam.nasrt.model;
 
 import de.mrbaam.nasrt.data.Release;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,10 +21,12 @@ public class Model {
     private static Model model;
 
     private final ObservableList<Release> releases;
+    private final ObservableList<Release> finishedReleases;
 
 
     private Model() {
-        releases = FXCollections.observableArrayList();
+        finishedReleases = FXCollections.observableArrayList();
+        releases         = FXCollections.observableArrayList();
     }
 
 
@@ -34,12 +38,22 @@ public class Model {
     }
 
 
+    public static void clearInstance() {
+        model = null;
+    }
+
+
     public ObservableList<Release> readReleases(Path rootPath) throws IOException {
         final ReleaseFileVisitor l_visitor;
 
         l_visitor = new ReleaseFileVisitor(releases);
 
         Files.walkFileTree(rootPath, l_visitor);
+
+        for (Release release : releases) {
+            if (Release.OK.equals(release.getStatus()))
+                finishedReleases.add(release);
+        }
 
         return releases;
     }
@@ -49,6 +63,8 @@ public class Model {
         final Map<String, Path> moveMap   = release.getMovingCandidates();
         final Map<String, Path> renameMap = release.getRenamingCandidates();
         final Map<String, Path> deleteMap = release.getDeletingCandidates();
+
+        release.setStatus(Release.PROGRESS);
 
         for (String name : renameMap.keySet()) {
             final Path   oldPath;
@@ -82,6 +98,10 @@ public class Model {
         for (String name : deleteMap.keySet()) {
             Files.deleteIfExists(deleteMap.get(name));
         }
+
+        Files.walkFileTree(release.getPathToRelease(), new CleanUpFileVisitor());
+
+        release.setStatus(Release.OK);
     }
 
 
@@ -115,6 +135,11 @@ public class Model {
 
         // TODO log error
         return null;
+    }
+
+
+    public ObservableList<Release> getFinishedReleases() {
+        return finishedReleases;
     }
 
 

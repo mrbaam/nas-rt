@@ -32,6 +32,8 @@ public class ModelTestCase extends TestCaseBase {
 
     @After
     protected void tearDown() throws Exception {
+        Model.clearInstance();
+
         super.tearDown();
     }
 
