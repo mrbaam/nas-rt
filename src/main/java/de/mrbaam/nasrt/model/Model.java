@@ -2,13 +2,11 @@ package de.mrbaam.nasrt.model;
 
 import de.mrbaam.nasrt.data.Release;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -106,7 +104,7 @@ public class Model {
 
 
     private Path _getNewEpisodePath(Path path, String newName) {
-        if (path.getParent().getFileName().toString().matches("[Ss](taffel)\\s\\d+"))
+        if (path.getParent().getFileName().toString().matches(REGEX.SEASON_TITLE))
             return path.getParent().resolve(newName);
         else
             return _getNewEpisodePath(path.getParent(), newName);
@@ -119,21 +117,85 @@ public class Model {
         final Matcher       matcher;
 
         builder = new StringBuilder();
-        pattern = Pattern.compile("\\W([Ss]\\d+)?[Ee]\\d+");
+        pattern = Pattern.compile(REGEX.DEFAULT_EPISODE);
         matcher = pattern.matcher(oldPath.toString());
 
         if (matcher.find()) {
             final String episodeID = matcher.group();
             final String fileName  = oldPath.getFileName().toString();
 
-            builder.append(title.replaceAll("[^a-zA-Z0-9ÄäÖöÜüß]", " ").replaceAll("\\s+", "."));
+            builder.append(title.replaceAll(REGEX.ALL_UNSUPPORTED_SIGNS, " ").replaceAll(REGEX.WHITESPACES, "."));
             builder.append(episodeID);
             builder.append(fileName.substring(fileName.lastIndexOf(".")));
 
             return builder.toString();
         }
+        else {
+            final String episodeID = _findEpisodeID(oldPath);
+
+            if (episodeID != null) {
+
+            }
+        }
 
         // TODO log error
+        return null;
+    }
+
+
+    private String _findEpisodeID(Path path2file) {
+        final StringBuilder builder;
+        final Pattern       pattern;
+        final Matcher       matcher;
+        final String        season;
+
+        season = _extractSeason(path2file);
+
+        if (season == null)
+            return null;
+
+        builder = new StringBuilder();
+        pattern = Pattern.compile("[0]*" + season + "[0]*\\d+");
+        matcher = pattern.matcher(path2file.toAbsolutePath().toString());
+
+        if (matcher.find()) {
+            final String seasonNotation;
+            final String episodeNotation;
+
+            String episode;
+
+            if (Integer.parseInt(season) < 10)
+                seasonNotation = "S0" + season;
+            else
+                seasonNotation = "S" + season;
+
+            episode = matcher.group();
+            episode = episode.substring(episode.indexOf(season) + 1);
+
+            if (!episode.startsWith("0") && Integer.parseInt(episode) < 10)
+                episodeNotation = "E0" + episode;
+            else
+                episodeNotation = "E" + episode;
+        }
+
+        return builder.toString();
+    }
+
+
+    private String _extractSeason(Path path2file) {
+        final Pattern pattern;
+        final Matcher matcher;
+
+        pattern = Pattern.compile(REGEX.SEASON_TITLE);
+        matcher = pattern.matcher(path2file.toAbsolutePath().toString());
+
+        if (matcher.find()) {
+            final String season       = matcher.group();
+            final String seasonNumber = season.substring(season.indexOf(" ") + 1);
+
+            return seasonNumber;
+        }
+
         return null;
     }
 
